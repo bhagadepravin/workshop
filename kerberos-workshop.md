@@ -108,7 +108,7 @@ kadmin.local: listprincs
 kadmin.local: addprinc user1@ADSRE.COM
 kadmin.local: addprinc admin/admin@ADSRE.COM
 ```
-Step 3. Review the kdc.conf file and configuration options.
+**Step 3.** Review the kdc.conf file and configuration options.
 ```bash
 cat /var/kerberos/krb5kdc/kdc.conf
 cat /var/kerberos/krb5kdc/kadm5.acl
