@@ -11,11 +11,11 @@ LAB 1:
 
 # LAB 1: 
 
-### Why Kerbeors?
+## Why Kerbeors?
 Kerberos is a solution to your network security problems. 
 It provides the tools of authentication and strong cryptography over the network to help you secure your information systems across your entire enterprise.
 
-###  What is Kerbeors?
+##  What is Kerbeors?
 Kerberos is a network authentication protocol. 
 It is designed to provide strong authentication for client/server applications by using secret-key cryptography. 
 Kerberos is a system for authenticating access to distributed services:
