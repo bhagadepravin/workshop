@@ -96,22 +96,22 @@ ADSRE.COM {
   admin_server=<Hostname>
 }
 
-#kdb5_util create -s
-#service krb5kdc start
-#service kadmin start
+$ kdb5_util create -s
+$ service krb5kdc start
+$ service kadmin start
 ```
 
 **Step 2.** Create a user principal and a admin principal.
 ```bash
-#kadmin.local
+$ kadmin.local
 kadmin.local: listprincs
 kadmin.local: addprinc user1@ADSRE.COM
 kadmin.local: addprinc admin/admin@ADSRE.COM
 ```
 Step 3. Review the kdc.conf file and configuration options.
 ```bash
-#cat /var/kerberos/krb5kdc/kdc.conf
-#cat /var/kerberos/krb5kdc/kadm5.acl
+cat /var/kerberos/krb5kdc/kdc.conf
+cat /var/kerberos/krb5kdc/kadm5.acl
 ```
 https://web.mit.edu/kerberos/krb5-1.12/doc/admin/conf_files/kdc_conf.html https://web.mit.edu/kerberos/krb5-1.12/doc/admin/conf_files/kadm5_acl.html
 
