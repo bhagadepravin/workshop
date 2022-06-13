@@ -79,3 +79,72 @@ Examples: **ENTERPRISE**, **HCLUSTER**
 * A ticket is something which can be passed to a server to identify that the caller and to provide a secret key that can be used between the client an the server —for the duration of the ticket's lifetime. 
 * It is all that a server needs to authenticate a client: there's no need for the server to talk to the KDC.
 
+# Install MIT KDC
+
+**Step 1.**
+On one host install and configure KDC with realm name ADSRE.COM.
+
+```bash
+$ yum install krb5-server krb5-libs krb5-workstation
+$ vi /etc/krb5.conf 
+[...]
+default_realm=ADSRE.COM
+
+[realms]
+ADSRE.COM {
+  kdc=<Hostname>
+  admin_server=<Hostname>
+}
+
+#kdb5_util create -s
+#service krb5kdc start
+#service kadmin start
+```
+
+**Step 2.** Create a user principal and a admin principal.
+```bash
+#kadmin.local
+kadmin.local: listprincs
+kadmin.local: addprinc user1@ADSRE.COM
+kadmin.local: addprinc admin/admin@ADSRE.COM
+```
+Step 3. Review the kdc.conf file and configuration options.
+```bash
+#cat /var/kerberos/krb5kdc/kdc.conf
+#cat /var/kerberos/krb5kdc/kadm5.acl
+```
+https://web.mit.edu/kerberos/krb5-1.12/doc/admin/conf_files/kdc_conf.html https://web.mit.edu/kerberos/krb5-1.12/doc/admin/conf_files/kadm5_acl.html
+
+Configure `kdc.conf` so that keys can be created with different encryption types (rc4-hmac) like below:
+```bash
+[realms]
+ADSRE.COM = {
+master_key_type = aes256-cts
+acl_file = /var/kerberos/krb5kdc/kadm5.acl
+dict_file = /usr/share/dict/words
+admin_keytab = /var/kerberos/krb5kdc/kadm5.keytab
+supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal
+}
+```
+Review the `kadm5.acl`, refer documentation for possible acl and the format.
+
+https://web.mit.edu/kerberos/krb5-1.12/doc/admin/conf_files/kadm5_acl.html
+
+**Step 4.** On client install the krb5 client pkgs and configured krb5.conf.
+```bash
+#yum install krb5-libs krb5-workstation
+(Update krb5.conf with REALM and kdc info) #vi /etc/krb5.conf [...] default_realm=ADSRE.COM [..]
+
+[realms]
+
+ADSRE.COM
+{
+ admin_server = <kadmin_server_hostname>
+  kdc = <kdc_server_hostname>
+}
+```
+**Step 5.** Verify if you can authenticate with the userprincipal user1 created on kdc in step 2.
+
+```bash
+$ kinit user1
+```
