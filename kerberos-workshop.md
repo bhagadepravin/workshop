@@ -1,4 +1,13 @@
-# Kerberos Workshop
+<p align="center">
+  <a href="https://www.jamify.org">
+    <img alt="Jamify" src="[https://raw.githubusercontent.com/bhagadepravin/knox-workshop/master/jpeg/image%20(3).png](https://user-images.githubusercontent.com/28974904/173368528-016022de-7dc8-4999-8767-4c334a1719f8.png)" />
+  </a>
+</p>
+<h1 align="center">
+   Kerbeors Workshop <br/>
+</h1>
+
+![1643741826059 copy](https://user-images.githubusercontent.com/28974904/173368528-016022de-7dc8-4999-8767-4c334a1719f8.png)
 
 In this workshop we will configure and understand kerberos authentication to use with Hadoop environment. For this workshop configure HDP clusters in lab. We will use Ambari servers of both the clusters as KDC and one of the node as KDC client.
 
