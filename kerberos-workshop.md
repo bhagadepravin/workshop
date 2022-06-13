@@ -19,16 +19,16 @@ LAB 1:
 # LAB 1: 
 
 ## Why Kerbeors?
-Kerberos is a solution to your network security problems. 
-It provides the tools of authentication and strong cryptography over the network to help you secure your information systems across your entire enterprise.
+* Kerberos is a solution to your network security problems.
+* It provides the tools of authentication and strong cryptography over the network to help you secure your information systems across your entire enterprise.
 
 ##  What is Kerbeors?
-Kerberos is a network authentication protocol. 
-It is designed to provide strong authentication for client/server applications by using secret-key cryptography. 
-Kerberos is a system for authenticating access to distributed services:
+* Kerberos is a network authentication protocol. 
+* It is designed to provide strong authentication for client/server applications by using secret-key cryptography. 
+* Kerberos is a system for authenticating access to distributed services:
 
 
-Kerberos runs as a third-party trusted server known as the Key Distribution Center (KDC). Each user and service on the network is a principal.
+Kerberos runs as a third-party trusted server known as the **Key Distribution Center (KDC)**. Each user and service on the network is a principal.
 
 The KDC has three main components:
 
@@ -63,18 +63,19 @@ User login and request services on the host. Thus user requests for ticket-grant
 ## Few Kerberos Terms:
 
 ## Kerbeors Principal:-
-A principal is an identity in the system; a person or a thing like the hadoop namenode which has been given an identity.
-In Hadoop, a different principal is usually created for each service and machine in the cluster, such as hdfs/node1, hdfs/node2, ... etc. These principals would then be used for all HDFS daemons running on node1, node2, etc.
+* A principal is an identity in the system; a person or a thing like the hadoop namenode which has been given an identity.
+* In Hadoop, a different principal is usually created for each service and machine in the cluster, such as hdfs/node1, hdfs/node2, ... etc. These principals would then be used for all HDFS daemons running on node1, node2, etc.
 
 ## Kerberos Realm:-
-A Kerberos Realm is the security equivalent of a subnet: all principals live in a realm. 
+* A Kerberos Realm is the security equivalent of a subnet: all principals live in a realm. 
 Examples: **ENTERPRISE**, **HCLUSTER**
-This would allow a Hadoop cluster with its own KDC and realm to trust the ENTERPRISE realm, but for the enterprise realm to not trust the HCLUSTER realm, and hence all its principals. This would prevent a principal **hdfs/node1@HCLUSTER** from having access to the **ENTERPRISE** systems.
+* This would allow a Hadoop cluster with its own KDC and realm to trust the ENTERPRISE realm, but for the enterprise realm to not trust the HCLUSTER realm, and hence all its principals. This would prevent a principal **hdfs/node1@HCLUSTER** from having access to the **ENTERPRISE** systems.
 
 ## Keytab:-
-A (binary) file containing the secrets needed to log in as a principal
-It contains all the information to log in as a principal, so is a sensitive file.
+* A (binary) file containing the secrets needed to log in as a principal
+* It contains all the information to log in as a principal, so is a sensitive file.
 
 ## Tickets:-
-A ticket is something which can be passed to a server to identify that the caller and to provide a secret key that can be used between the client an the server —for the duration of the ticket's lifetime. It is all that a server needs to authenticate a client: there's no need for the server to talk to the KDC.
+* A ticket is something which can be passed to a server to identify that the caller and to provide a secret key that can be used between the client an the server —for the duration of the ticket's lifetime. 
+* It is all that a server needs to authenticate a client: there's no need for the server to talk to the KDC.
 
