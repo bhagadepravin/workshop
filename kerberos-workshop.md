@@ -24,9 +24,10 @@ Kerberos is a system for authenticating access to distributed services:
 Kerberos runs as a third-party trusted server known as the Key Distribution Center (KDC). Each user and service on the network is a principal.
 
 The KDC has three main components:
-An authentication server that performs the initial authentication and issues ticket-granting tickets for users.
-A ticket granting server that issues service tickets that are based on the initial ticket-granting tickets.
-A principals database of secret keys for all the users and services that it maintains.
+
+* An **authentication server (AS)** that performs the initial authentication and issues ticket-granting tickets for users.
+* A **ticket granting server (TGS)** that issues service tickets that are based on the initial ticket-granting tickets.
+* A principals **database** of secret keys for all the users and services that it maintains.
 
 ![kdc](https://user-images.githubusercontent.com/28974904/173366640-c2e90f0d-6cf0-4330-8c9b-49f30944c600.jpeg)
 
