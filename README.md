@@ -1,4 +1,4 @@
-# Security workshop
+# Security Workshops
 
 * [Kerberos Workshop](https://github.com/bhagadepravin/workshop/blob/main/kerberos-workshop.md)
 * [Ranger Workshop](https://github.com/bhagadepravin/workshop/blob/main/ranger-workshop.md)
