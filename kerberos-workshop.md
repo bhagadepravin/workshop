@@ -35,19 +35,19 @@ The KDC has three main components:
 User login and request services on the host. Thus user requests for ticket-granting service. 
  
 **Step-2:**
-Authentication Server verifies user’s access right using database and then gives ticket-granting-ticket and session key. Results are encrypted using the Password of the user. 
+ Authentication Server verifies user’s access right using database and then gives ticket-granting-ticket and session key. Results are encrypted using the Password of the user. 
  
 **Step-3:**
-The decryption of the message is done using the password then send the ticket to Ticket Granting Server. The Ticket contains authenticators like user names and network addresses. 
+ The decryption of the message is done using the password then send the ticket to Ticket Granting Server. The Ticket contains authenticators like user names and network addresses. 
  
 **Step-4:** 
-Ticket Granting Server decrypts the ticket sent by User and authenticator verifies the request then creates the ticket for requesting services from the Server. 
+ Ticket Granting Server decrypts the ticket sent by User and authenticator verifies the request then creates the ticket for requesting services from the Server. 
  
 **Step-5:**
-The user sends the Ticket and Authenticator to the Server. 
+ The user sends the Ticket and Authenticator to the Server. 
  
 **Step-6:**
-The server verifies the Ticket and authenticators then generate access to the service. After this User can access the services. 
+ The server verifies the Ticket and authenticators then generate access to the service. After this User can access the services. 
 
 ### Understanding Kerberos authentication:
 ![Understanding Kerberos authentication](https://user-images.githubusercontent.com/28974904/173363503-e9db7171-610e-4933-a7b1-7bfa089b2632.png)
