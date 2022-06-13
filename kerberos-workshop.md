@@ -35,6 +35,7 @@ The KDC has three main components:
 User login and request services on the host. Thus user requests for ticket-granting service. 
  
 **Step-2:**
+
  Authentication Server verifies user’s access right using database and then gives ticket-granting-ticket and session key. Results are encrypted using the Password of the user. 
  
 **Step-3:**
