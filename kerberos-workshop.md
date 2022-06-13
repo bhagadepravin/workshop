@@ -149,3 +149,6 @@ ADSRE.COM
 ```bash
 $ kinit user1
 ```
+
+## Optional, Use bash script to install MIT KDC 
+https://gist.github.com/bhagadepravin/f1f6a3d9c26e24eee76d8288de3f6f89
