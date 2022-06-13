@@ -113,8 +113,8 @@ Step 3. Review the kdc.conf file and configuration options.
 cat /var/kerberos/krb5kdc/kdc.conf
 cat /var/kerberos/krb5kdc/kadm5.acl
 ```
-https://web.mit.edu/kerberos/krb5-1.12/doc/admin/conf_files/kdc_conf.html 
-https://web.mit.edu/kerberos/krb5-1.12/doc/admin/conf_files/kadm5_acl.html
+* https://web.mit.edu/kerberos/krb5-1.12/doc/admin/conf_files/kdc_conf.html 
+* https://web.mit.edu/kerberos/krb5-1.12/doc/admin/conf_files/kadm5_acl.html
 
 Configure `kdc.conf` so that keys can be created with different encryption types (rc4-hmac) like below:
 ```bash
