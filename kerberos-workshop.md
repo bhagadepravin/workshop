@@ -59,3 +59,24 @@ User login and request services on the host. Thus user requests for ticket-grant
 
 ### Understanding Kerberos authentication:
 ![Understanding Kerberos authentication](https://user-images.githubusercontent.com/28974904/173363503-e9db7171-610e-4933-a7b1-7bfa089b2632.png)
+
+## Few Kerberos Terms:
+
+* Kerbeors Principal:- 
+A principal is an identity in the system; a person or a thing like the hadoop namenode which has been given an identity.
+In Hadoop, a different principal is usually created for each service and machine in the cluster, such as hdfs/node1, hdfs/node2, ... etc. These principals would then be used for all HDFS daemons running on node1, node2, etc.
+
+* Kerberos Realm:-
+
+A Kerberos Realm is the security equivalent of a subnet: all principals live in a realm. 
+
+Examples: ENTERPRISE, HCLUSTER
+This would allow a Hadoop cluster with its own KDC and realm to trust the ENTERPRISE realm, but for the enterprise realm to not trust the HCLUSTER realm, and hence all its principals. This would prevent a principal hdfs/node1@HCLUSTER from having access to the ENTERPRISE systems.
+
+* Keytab:-
+A (binary) file containing the secrets needed to log in as a principal
+It contains all the information to log in as a principal, so is a sensitive file.
+
+* Tickets:-
+A ticket is something which can be passed to a server to identify that the caller and to provide a secret key that can be used between the client an the server —for the duration of the ticket's lifetime. It is all that a server needs to authenticate a client: there's no need for the server to talk to the KDC.
+
