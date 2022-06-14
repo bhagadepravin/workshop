@@ -158,10 +158,10 @@ $ kinit user1
 
 ## Hands On Lab:
 
-* Setup MIT KDC
+#### Setup MIT KDC
 - https://gist.github.com/bhagadepravin/f1f6a3d9c26e24eee76d8288de3f6f89
 
-* Enable kerberos on HDP cluster with MIT KDC Kerberos.
+#### Enable kerberos on HDP cluster with MIT KDC Kerberos.
 - https://docs.cloudera.com/HDPDocuments/HDP3/HDP-3.1.4/authentication-with-kerberos/content/enabling_kerberos_authentication_using_ambari.html
 
 
