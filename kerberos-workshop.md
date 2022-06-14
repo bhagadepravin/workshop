@@ -11,12 +11,14 @@ In this workshop we will configure and understand kerberos authentication to use
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-LAB 1: 
+LAB : 
   - Understanding Kerberos authentication:
   - Install and configure KDC.
+  - Enabling Kerberos Authentication Using Ambari
+  - Understanding Spnego authentication:
 
 
-# LAB 1: 
+# LAB: 
 
 ## Why Kerbeors?
 * Kerberos is a solution to your network security problems.
@@ -151,9 +153,73 @@ $ kinit user1
 ```
 
 ### Optional, Use bash script to install MIT KDC 
-https://gist.github.com/bhagadepravin/f1f6a3d9c26e24eee76d8288de3f6f89
 
 ## Hands On Lab:
 
 * Setup MIT KDC
+- https://gist.github.com/bhagadepravin/f1f6a3d9c26e24eee76d8288de3f6f89
+
 * Enable kerberos on HDP cluster with MIT KDC Kerberos.
+- https://docs.cloudera.com/HDPDocuments/HDP3/HDP-3.1.4/authentication-with-kerberos/content/enabling_kerberos_authentication_using_ambari.html
+
+
+# Understanding Spnego authentication:
+
+Kerberos is a network authentication protocol for client/server applications, and SPNEGO provides a mechanism for extending Kerberos to Web applications through the standard HTTP protocol.
+
+
+**Example:** 
+
+1. Access a Spnego Enabled UI via `curl` cmd
+
+```bash
+[root@mstr3 keytabs]# klist
+Ticket cache: FILE:/tmp/krb5cc_0
+Default principal: infra-solr/mstr3.hdp265.centos7.adsre@ACCEL2HDP.COM
+
+Valid starting     Expires            Service principal
+06/14/22 19:40:00  06/15/22 19:40:00  krbtgt/ACCEL2HDP.COM@ACCEL2HDP.COM
+	renew until 06/21/22 19:40:00
+  
+  
+[root@mstr3 keytabs]# curl -ik --negotiate -u : "http://$(hostname -f):8886/solr/admin/collections?action=clusterstatus&wt=json&indent=true"
+HTTP/1.1 401 Authentication required
+WWW-Authenticate: Negotiate
+Set-Cookie: hadoop.auth=; Path=/; Domain=mstr3.hdp265.centos7.adsre; Expires=Thu, 01-Jan-1970 00:00:00 GMT; HttpOnly
+Content-Type: text/html; charset=ISO-8859-1
+Cache-Control: must-revalidate,no-cache,no-store
+Content-Length: 334
+
+HTTP/1.1 200 OK
+WWW-Authenticate: Negotiate YGoGCSqGSIb3EgECAgIAb1swWaADAgEFoQMCAQ+iTTBLoAMCARKiRARCnLdWCA6ZXewSPuUh6KfmjWmLcRIXJEWCJNfB2loGJhJnlM1sWWj5fJnZdlQUHUEQZ+iFQt9meEdJw7nBvw87Lqe/
+Set-Cookie: hadoop.auth="u=infra-solr&p=infra-solr/mstr3.hdp265.centos7.adsre@ACCEL2HDP.COM&t=kerberos&e=1655251939613&s=bTPlg2RlXGulLmmjdwWK5inlzrM="; Path=/; Domain=mstr3.hdp265.centos7.adsre; Expires=Wed, 15-Jun-2022 00:12:19 GMT; HttpOnly
+Content-Type: application/json; charset=UTF-8
+Transfer-Encoding: chunked
+
+{
+  "responseHeader":{
+    "status":0,
+    "QTime":1376},
+  "cluster":{
+    "collections":{},
+    "properties":{"urlScheme":"http"},
+    "live_nodes":["mstr3.hdp265.centos7.adsre:8886_solr"]}}
+
+
+[root@mstr3 keytabs]# klist
+Ticket cache: FILE:/tmp/krb5cc_0
+Default principal: infra-solr/mstr3.hdp265.centos7.adsre@ACCEL2HDP.COM
+
+Valid starting     Expires            Service principal
+06/14/22 19:40:00  06/15/22 19:40:00  krbtgt/ACCEL2HDP.COM@ACCEL2HDP.COM
+	renew until 06/21/22 19:40:00
+06/14/22 19:42:19  06/15/22 19:40:00  HTTP/mstr3.hdp265.centos7.adsre@
+	renew until 06/21/22 19:40:00
+06/14/22 19:42:19  06/15/22 19:40:00  HTTP/mstr3.hdp265.centos7.adsre@ACCEL2HDP.COM
+	renew until 06/21/22 19:40:00
+```
+
+2. Access Spnego Enabled UI via Browser.
+
+* For Windows Machine: https://community.cloudera.com/t5/Community-Articles/User-authentication-from-Windows-Workstation-to-HDP-Realm/ta-p/245957
+* For Mac Machine : https://community.cloudera.com/t5/Community-Articles/Configure-Mac-and-Firefox-to-access-HDP-HDF-SPNEGO-UI/ta-p/249092
