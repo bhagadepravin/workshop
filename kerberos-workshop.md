@@ -15,7 +15,9 @@ LAB :
   - Understanding Kerberos authentication:
   - Install and configure KDC.
   - Enabling Kerberos Authentication Using Ambari
-  - Understanding Spnego authentication:
+  - Understanding Spnego authentication
+    - How to use curl cmd to access Spnego enabled UI's
+    - How to configure Browser to access Spnego enabled UI's
 
 
 # LAB: 
