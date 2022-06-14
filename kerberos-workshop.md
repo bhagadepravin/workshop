@@ -12,12 +12,12 @@ In this workshop we will configure and understand kerberos authentication to use
 ------------------------------------------------------------------------------------------------------------------------------
 
 LAB : 
-  - Understanding Kerberos authentication:
-  - Install and configure KDC.
-  - Enabling Kerberos Authentication Using Ambari
-  - Understanding Spnego authentication
-    - How to use curl cmd to access Spnego enabled UI's
-    - How to configure Browser to access Spnego enabled UI's
+  - [Understanding Kerberos authentication:](https://github.com/bhagadepravin/workshop/blob/main/kerberos-workshop.md#why-kerbeors)
+  - [Install and configure KDC.](https://github.com/bhagadepravin/workshop/blob/main/kerberos-workshop.md#install-mit-kdc)
+  - [Enabling Kerberos Authentication Using Ambari](https://github.com/bhagadepravin/workshop/blob/main/kerberos-workshop.md#enable-kerberos-on-hdp-cluster-with-mit-kdc-kerberos)
+  - [Understanding Spnego authentication](https://github.com/bhagadepravin/workshop/blob/main/kerberos-workshop.md#understanding-spnego-authentication)
+    - [How to use curl cmd to access Spnego enabled UI's](https://github.com/bhagadepravin/workshop/blob/main/kerberos-workshop.md#1-access-a-spnego-enabled-ui-via-curl-cmd)
+    - [How to configure Browser to access Spnego enabled UI's](https://github.com/bhagadepravin/workshop/blob/main/kerberos-workshop.md#2-access-spnego-enabled-ui-via-browser)
 
 
 # LAB: 
@@ -174,6 +174,15 @@ Kerberos is a network authentication protocol for client/server applications, an
 
 ### 1. Access a Spnego Enabled UI via `curl` cmd
 
+Currently we are trying to access SOLR WebUI, which is Spnego enabled, which means it require Kerberos authentication for access.
+We will kinit with admin/solr principal.
+
+with curl cmd we will pass `--negotiate -u:" along with service url.
+
+when I use the --negotiate option, curl initially sends a request with no credentials, and then when it gets a 401,
+it sends another request, this time with the Kerberos credentials. This is all a normal part of the HTTP Negotiate protocol.
+
+In the end you will see HTTP principal in klist cmd, Once curl cmd was execute successfully, As Spnego uses HTTP protocol
 ```bash
 [root@mstr3 keytabs]# klist
 Ticket cache: FILE:/tmp/krb5cc_0
