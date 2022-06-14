@@ -172,7 +172,7 @@ Kerberos is a network authentication protocol for client/server applications, an
 
 **Example:** 
 
-1. Access a Spnego Enabled UI via `curl` cmd
+### 1. Access a Spnego Enabled UI via `curl` cmd
 
 ```bash
 [root@mstr3 keytabs]# klist
@@ -221,7 +221,7 @@ Valid starting     Expires            Service principal
 	renew until 06/21/22 19:40:00
 ```
 
-2. Access Spnego Enabled UI via Browser.
+### 2. Access Spnego Enabled UI via Browser.
 
 * For Windows Machine: https://community.cloudera.com/t5/Community-Articles/User-authentication-from-Windows-Workstation-to-HDP-Realm/ta-p/245957
 * For Mac Machine : https://community.cloudera.com/t5/Community-Articles/Configure-Mac-and-Firefox-to-access-HDP-HDF-SPNEGO-UI/ta-p/249092
