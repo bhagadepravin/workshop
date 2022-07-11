@@ -72,10 +72,10 @@ Ranger users are typically the organizational policy administrator who allow/den
 ![image](https://user-images.githubusercontent.com/28974904/178187718-2ff8a911-9a4e-48aa-a493-148c8ccaf9d4.png)
 
 
-## How does user get authorized in Ranger?
+*  How does user get authorized in Ranger?
       Ranger Authorization takes place inside the host services (like HDFS NameNode, YARN ResourceManager and HiveServer2 etc.)
 
-## How does Ranger audit work?
+*  How does Ranger audit work?
       Ranger plugins send their audit event (whether access was granted or not and based on which policy) directly to the configured sink for audits, which can be HDFS, Solr or both.
 
 <img width="824" alt="image" src="https://user-images.githubusercontent.com/28974904/178188017-bfbdc8a1-88aa-4909-afe9-1e3b1fd2b81b.png">
