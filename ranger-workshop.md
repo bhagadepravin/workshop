@@ -135,14 +135,14 @@ $ lsof -p <nn-pid> | grep ranger-plugin
 Or check Plugin Status Tab
 
 * **1.3.1 Make sure PolicyCache is getting updated**
-* If PolicyCache file is not getting updated, then here are a couple of things that we can do:
+- If PolicyCache file is not getting updated, then here are a couple of things that we can do:
      * Check the file permission of PolicyCache file - should be owned by a user who is running the host service (hdfs for NameNode, yarn for YARN RM, hive for HiveServer2 etc.)
      * Try restarting the host service (Get customer’s permission to do this, if this is a production environment)
      * Check for errors in host service logs, usually there could be connection issue between host service and Ranger Admin.
      * You may need to enable debug for Ranger plugin and restart the host service again to get the root cause of the error.
 
 * **1.4.0 Check if a Ranger Policy actually defined**
-* If PolicyCache is updated correctly and still authorization is not working, then check if there is a policy defined which allows access for the combination of these:
+-- If PolicyCache is updated correctly and still authorization is not working, then check if there is a policy defined which allows access for the combination of these:
      * user (or group that the user is part of)
      * Resource (that is being accessed)
      * operation (that is being performed by the said user)
