@@ -12,7 +12,7 @@
 - [Lab](#lab-1)
   - Ranger install pre-reqs
   - Ranger install
-- [Lab 1a](##lab-1a)
+- [Lab 1a](#lab-1a)
   - Secured Hadoop exercises
     - HDFS
     - Hive
