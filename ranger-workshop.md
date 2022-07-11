@@ -59,6 +59,7 @@ Ranger users are typically the organizational policy administrator who allow/den
      * Ranger Plugins keep polling the Ranger Admin over REST for the latest policy data every 30 seconds (configurable). The policy data is stored in JSON format in a on-disk local file, called PolicyCache.
      * PolicyCache file will NOT get updated if there is no change in policy from the last downloaded version (A policy version at service repo level is maintained in Ranger database).
      * Ranger Plugins consult the Ranger policy and decide whether to allow/deny access to end-user.
+     * Enabling Ranger Plugins : https://docs.cloudera.com/HDPDocuments/HDP2/HDP-2.6.5/bk_security/content/ch_enable_ranger_plugins.html
 
 * **Ranger Audit**
      * Ranger Audit component is responsible for logging and record keeping of all the access attempts (both failed and passed) made by end-user.
