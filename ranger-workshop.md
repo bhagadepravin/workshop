@@ -1,4 +1,11 @@
-# Ranger Workshop
+<p align="center">
+  <a href="https://web.mit.edu/kerberos/">
+    <img alt="Jamify" src="https://user-images.githubusercontent.com/28974904/178196646-9160b41a-dbd9-4a60-870e-edb52a38d435.png" />
+  </a>
+</p>
+<h1 align="center">
+   Ranger Workshop <br/>
+</h1>
 
 * **Topics:**
 	* Why Apache Ranger?
