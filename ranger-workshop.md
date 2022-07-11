@@ -28,10 +28,12 @@ Ranger users are typically the organizational policy administrator who allow/den
 ## What are the services that Ranger run?
 
 ● **Ranger Admin**
+
     ○ This service is the central main component to entire Ranger ecosystem. RangerAdmin provides administration capabilities to Ranger users. Ranger Admin
       manages policies and users/groups. It exposes a web UI (Ranger Admin UI), which runs at default port 6080, where user can perform CRUD operations           onpolicies, users/groups and can also access audit records.
 
 ● **Ranger UserSync**
+
     ○ This service is responsible for syncing users, groups and group membershipsfrom external sources like Active Directory or an LDAP server. By default,       it syncs the users/groups from the Unix files of the node where UserSync is running.
 
 ● **Ranger TagSync*
