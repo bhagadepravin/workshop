@@ -1,6 +1,6 @@
 <p align="center">
-  <a href="https://web.mit.edu/kerberos/">
-    <img alt="Jamify" src="https://user-images.githubusercontent.com/28974904/178196646-9160b41a-dbd9-4a60-870e-edb52a38d435.png" />
+  <a href="https://ranger.apache.org/">
+    <img alt="Jamify" src="https://user-images.githubusercontent.com/28974904/178196752-073d05de-19b3-4fe1-88c2-a96b558b4f1e.png" />
   </a>
 </p>
 <h1 align="center">
