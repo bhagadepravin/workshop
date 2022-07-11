@@ -248,14 +248,11 @@ exit
     - If the file is not present, it is available on RHEL/CentOS with: `sudo yum -y install mysql-connector-java`
 
 
-
-
 ###### Setup Solr for Ranger audit 
 
 - Starting HDP 2.5, if you have deployed Ambari Infra service installed, this can be used for Ranger audits.
 - **Make sure Ambari Infra service is installed and started before starting Ranger install**
 
-- *TODO*: add steps to install/configure Banana dashboard for Ranger Audits 
 ## Ranger install
 
 ##### Install Ranger
@@ -390,3 +387,543 @@ http://PUBLIC_IP_OF_SOLRLEADER_NODE:6083/solr/banana/index.html#/dashboard
 ![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Banana-audits.png)
 --->
 ------------------
+
+# Lab 7a
+
+## Secured Hadoop exercises
+
+In this lab we will see how to interact with Hadoop components (HDFS, Hive, Hbase, Sqoop) running on a kerborized cluster and create Ranger appropriate authorization policies for access.
+
+- We will Configure Ranger policies to:
+  - Protect /sales HDFS dir - so only sales group has access to it
+  - Protect sales hive table - so only sales group has access to it
+  - Protect sales HBase table - so only sales group has access to it
+
+#### Access secured HDFS
+
+- Goal: Create a /sales dir in HDFS and ensure only users belonging to sales group (and admins) have access
+ 
+ 
+- Login to Ranger (using admin/admin) and confirm the HDFS repo was setup correctly in Ranger
+  - In Ranger > Under Service Manager > HDFS > Click the Edit icon (next to the trash icon) to edit the HDFS repo
+  - Click 'Test connection' 
+  - if it fails re-enter below fields and re-try:
+    - Username: `rangeradmin@LAB.HORTONWORKS.NET`
+    - Password: BadPass#1
+    - RPC Protection type: Authentication
+  - Once the test passes, click Save  
+  
+   
+- Create /sales dir in HDFS as hadoopadmin
+```
+#authenticate
+sudo -u hadoopadmin kinit
+# enter password: BadPass#1
+
+#create dir and set permissions to 000
+sudo -u hadoopadmin hdfs dfs -mkdir /sales
+sudo -u hadoopadmin hdfs dfs -chmod 000 /sales
+```  
+
+- Now login as sales1 and attempt to access it before adding any Ranger HDFS policy
+```
+sudo su - sales1
+
+hdfs dfs -ls /sales
+```
+- This fails with `GSSException: No valid credentials provided` because the cluster is kerberized and we have not authenticated yet
+
+- Authenticate as sales1 user and check the ticket
+```
+kinit
+# enter password: BadPass#1
+
+klist
+## Default principal: sales1@LAB.HORTONWORKS.NET
+```
+- Now try accessing the dir again as sales1
+```
+hdfs dfs -ls /sales
+```
+- This time it fails with authorization error: 
+  - `Permission denied: user=sales1, access=READ_EXECUTE, inode="/sales":hadoopadmin:hdfs:d---------`
+
+- Login into Ranger UI e.g. at http://RANGER_HOST_PUBLIC_IP:6080/index.html as admin/admin
+
+- In Ranger, click on 'Audit' to open the Audits page and filter by below. 
+  - Service Type: `HDFS`
+  - User: `sales1`
+  
+- Notice that Ranger captured the access attempt and since there is currently no policy to allow the access, it was "Denied"
+![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-audit-HDFS-denied.png)
+
+- To create an HDFS Policy in Ranger, follow below steps:
+  - On the 'Access Manager' tab click HDFS > (clustername)_hadoop
+  ![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-HDFS-policy.png)
+  - This will open the list of HDFS policies
+  ![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-HDFS-edit-policy.png)
+  - Click 'Add New Policy' button to create a new one allowing `sales` group users access to `/sales` dir:
+    - Policy Name: `sales dir`
+    - Resource Path: `/sales`
+    - Group: `sales`
+    - Permissions : `Execute Read Write`
+    - Add
+  ![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-HDFS-create-policy.png)
+
+- Wait 30s for policy to take effect
+  
+- Now try accessing the dir again as sales1 and now there is no error seen
+```
+hdfs dfs -ls /sales
+```
+
+- In Ranger, click on 'Audit' to open the Audits page and filter by below:
+  - Service Type: HDFS
+  - User: sales1
+  
+- Notice that Ranger captured the access attempt and since this time there is a policy to allow the access, it was `Allowed`
+![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-audit-HDFS-allowed.png)  
+
+  - You can also see the details that were captured for each request:
+    - Policy that allowed the access
+    - Time
+    - Requesting user
+    - Service type (e.g. hdfs, hive, hbase etc)
+    - Resource name 
+    - Access type (e.g. read, write, execute)
+    - Result (e.g. allowed or denied)
+    - Access enforcer (i.e. whether native acl or ranger acls were used)
+    - Client IP
+    - Event count
+    
+- For any allowed requests, notice that you can quickly check the details of the policy that allowed the access by clicking on the policy number in the 'Policy ID' column
+![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-audit-policy-details.png)  
+
+- Now let's check whether non-sales users can access the directory
+
+- Logout as sales1 and log back in as hr1
+```
+kdestroy
+#logout as sales1
+logout
+
+#login as hr1 and authenticate
+sudo su - hr1
+
+kinit
+# enter password: BadPass#1
+
+klist
+## Default principal: hr1@LAB.HORTONWORKS.NET
+```
+- Try to access the same dir as hr1 and notice it fails
+```
+hdfs dfs -ls /sales
+## ls: Permission denied: user=hr1, access=READ_EXECUTE, inode="/sales":hadoopadmin:hdfs:d---------
+```
+
+- In Ranger, click on 'Audit' to open the Audits page and this time filter by 'Resource Name'
+  - Service Type: `HDFS`
+  - Resource Name: `/sales`
+  
+- Notice you can see the history/details of all the requests made for /sales directory:
+  - created by hadoopadmin 
+  - initial request by sales1 user was denied 
+  - subsequent request by sales1 user was allowed (once the policy was created)
+  - request by hr1 user was denied
+![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-audit-HDFS-summary.png)  
+
+- Logout as hr1
+```
+kdestroy
+logout
+```
+- We have successfully setup an HDFS dir which is only accessible by sales group (and admins)
+
+#### Access secured Hive
+
+- Goal: Setup Hive authorization policies to ensure sales users only have access to code, description columns in default.sample_07
+
+- Enable Hive on tez by setting below and restarting Hive 
+  - Ambari > Hive > Configs  	
+    - Execution Engine = Tez
+
+- Confirm the HIVE repo was setup correctly in Ranger
+  - In Ranger > Service Manager > HIVE > Click the Edit icon (next to the trash icon) to edit the HIVE repo
+  - Click 'Test connection' 
+  - if it fails re-enter below fields and re-try:
+    - Username: `rangeradmin@LAB.HORTONWORKS.NET`
+    - Password: BadPass#1
+  - Once the test passes, click Save  
+
+- Now run these steps from node where Hive (or client) is installed 
+
+- Login as sales1 and attempt to connect to default database in Hive via beeline and access sample_07 table
+
+- Notice that in the JDBC connect string for connecting to an secured Hive while its running in default (ie binary) transport mode :
+  - port remains 10000
+  - *now a kerberos principal needs to be passed in*
+
+- Login as sales1 without kerberos ticket and try to open beeline connection:
+```
+sudo su - sales1
+kdestroy
+beeline -u "jdbc:hive2://localhost:10000/default;principal=hive/$(hostname -f)@LAB.HORTONWORKS.NET"
+```
+- This fails with `GSS initiate failed` because the cluster is kerberized and we have not authenticated yet
+
+- To exit beeline:
+```
+!q
+```
+- Authenticate as sales1 user and check the ticket
+```
+kinit
+# enter password: BadPass#1
+
+klist
+## Default principal: sales1@LAB.HORTONWORKS.NET
+```
+- Now try connect to Hive via beeline as sales1
+```
+beeline -u "jdbc:hive2://localhost:10000/default;principal=hive/$(hostname -f)@LAB.HORTONWORKS.NET"
+```
+
+- If you get the below error, it is because you did not add hive to the global KMS policy in an earlier step (along with nn, hadoopadmin). Go back and add it in.
+```
+org.apache.hadoop.security.authorize.AuthorizationException: User:hive not allowed to do 'GET_METADATA' on 'testkey'
+```
+
+- This time it connects. Now try to run a query
+```
+beeline> select code, description from sample_07;
+```
+- Now it fails with authorization error: 
+  - `HiveAccessControlException Permission denied: user [sales1] does not have [SELECT] privilege on [default/sample_07]`
+
+- Login into Ranger UI e.g. at http://RANGER_HOST_PUBLIC_IP:6080/index.html as admin/admin
+
+- In Ranger, click on 'Audit' to open the Audits page and filter by below. 
+  - Service Type: `Hive`
+  - User: `sales1`
+  
+- Notice that Ranger captured the access attempt and since there is currently no policy to allow the access, it was `Denied`
+![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-audit-HIVE-denied.png)
+
+- To create an HIVE Policy in Ranger, follow below steps:
+  - On the 'Access Manager' tab click HIVE > (clustername)_hive
+  ![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-HIVE-policy.png)
+  - This will open the list of HIVE policies
+  ![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-HIVE-edit-policy.png)
+  - Click 'Add New Policy' button to create a new one allowing `sales` group users access to `code`, `description` and `total_emp` columns in `sample_07` dir:
+    - Policy Name: `sample_07`
+    - Hive Database: `default`
+    - table: `sample_07`
+    - Hive Column: `code` `description` `total_emp`
+    - Group: `sales`
+    - Permissions : `select`
+    - Add
+  ![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-HIVE-create-policy.png)
+  
+- Notice that as you typed the name of the DB and table, Ranger was able to look these up and autocomplete them
+  -  This was done using the rangeradmin principal we provided during Ranger install
+
+- Also, notice that permissions are only configurable for allowing access, and you are not able to explicitly deny a user/group access to a resource unless you have enabled Deny Conditions during your Ranger install (step 8).
+
+- Wait 30s for the new policy to be picked up
+  
+- Now try accessing the columns again and now the query works
+```
+beeline> select code, description, total_emp from sample_07;
+```
+
+- Note though, that if instead you try to describe the table or query all columns, it will be denied - because we only gave sales users access to two columns in the table
+  - `beeline> desc sample_07;`
+  - `beeline> select * from sample_07;`
+  
+- In Ranger, click on 'Audit' to open the Audits page and filter by below:
+  - Service Type: HIVE
+  - User: sales1
+  
+- Notice that Ranger captured the access attempt and since this time there is a policy to allow the access, it was `Allowed`
+![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-audit-HIVE-allowed.png)  
+
+  - You can also see the details that were captured for each request:
+    - Policy that allowed the access
+    - Time
+    - Requesting user
+    - Service type (e.g. hdfs, hive, hbase etc)
+    - Resource name 
+    - Access type (e.g. read, write, execute)
+    - Result (e.g. allowed or denied)
+    - Access enforcer (i.e. whether native acl or ranger acls were used)
+    - Client IP
+    - Event count
+    
+- For any allowed requests, notice that you can quickly check the details of the policy that allowed the access by clicking on the policy number in the 'Policy ID' column
+![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-audit-HIVE-policy-details.png)  
+ 
+
+- We are also able to limit sales1's access to only subset of data by using row-level filter.  Suppose we only want to allow the sales group access to data where `total_emp` is less than 5000. 
+
+- On the Hive Policies page, select the 'Row Level Filter' tab and click on 'Add New Policy'
+![Image](/screenshots/Ranger-HIVE-select-row-level-filter-tab.png)  
+	- Please note that in order to apply a row level filter policy the user/group must already have 'select' permissions on the table. 
+
+- Create a policy restricting access to only rows where `total_emp` is less than 5000:
+    - Policy Name: `sample_07_filter_total_emp`
+    - Hive Database: `default`
+    - table: `sample_07`
+    - Group: `sales`
+    - Permissions : `select`
+    - Row Level Filter : `total_emp<5000`
+    	- The filter syntax is similar to what you would write after a 'WHERE' clause in a SQL query
+    - Add
+  ![Image](/screenshots/Ranger-HIVE-create-row-level-filter-policy.png)
+ 
+- Wait 30s for the new policy to be picked up
+  
+- Now try accessing the columns again and notice how only rows that match the filter criteria are shown
+```
+beeline> select code, description, total_emp from sample_07;
+```
+
+- Go back to the Ranger Audits page and notice how the filter policy was applied to the query
+
+
+- Suppose we would now like to mask `total_emp` column from sales1.  This is different from denying/dis-allowing access in that the user can query the column but cannot see the actual data 
+
+- On the Hive Policies page, select the 'Masking' tab and click on 'Add New Policy'
+![Image](/screenshots/Ranger-HIVE-select-masking-tab.png)  
+	- Please note that in order to mask a column, the user/group must already have 'select' permissions to that column.  Creating a masking policy on a column that a user does not have access to will deny the user access
+
+- Create a policy masking the  `total_emp` column for `sales` group users:
+    - Policy Name: `sample_07_total_emp`
+    - Hive Database: `default`
+    - table: `sample_07`
+    - Hive Column: `total_emp`
+    - Group: `sales`
+    - Permissions : `select`
+    - Masking Option : `redact`
+    	- Notice the different masking options available
+    	- The 'Custom' masking option can use any Hive UDF as long as it returns the same data type as that of the column 
+
+    - Add
+  ![Image](/screenshots/Ranger-HIVE-create-masking-policy.png)
+ 
+- Wait 30s for the new policy to be picked up
+  
+- Now try accessing the columns again and notice how the results for the `total_emp` column is masked
+```
+beeline> select code, description, total_emp from sample_07;
+```
+
+- Go back to the Ranger Audits page and notice how the masking policy was applied to the query.
+
+- Exit beeline
+```
+!q
+```
+- Now let's check whether non-sales users can access the table
+
+- Logout as sales1 and log back in as hr1
+```
+kdestroy
+#logout as sales1
+logout
+
+#login as hr1 and authenticate
+sudo su - hr1
+
+kinit
+# enter password: BadPass#1
+
+klist
+## Default principal: hr1@LAB.HORTONWORKS.NET
+```
+- Try to access the same table as hr1 and notice it fails
+```
+beeline -u "jdbc:hive2://localhost:10000/default;principal=hive/$(hostname -f)@LAB.HORTONWORKS.NET"
+```
+```
+beeline> select code, description from sample_07;
+```
+- In Ranger, click on 'Audit' to open the Audits page and filter by 'Service Type' = 'Hive'
+  - Service Type: `HIVE`
+
+  
+- Here you can see the request by sales1 was allowed but hr1 was denied
+
+![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-audit-HIVE-summary.png)  
+
+- Exit beeline
+```
+!q
+```
+- Logoff as hr1
+```
+logout
+```
+
+
+
+- We have setup Hive authorization policies to ensure only sales users have access to code, description columns in default.sample_07
+
+
+#### Access secured HBase
+
+- Goal: Create a table called 'sales' in HBase and setup authorization policies to ensure only sales users have access to the table
+  
+- Run these steps from any node where Hbase Master or RegionServer services are installed 
+
+- Login as sales1
+```
+sudo su - sales1
+```
+-  Start the hbase shell
+```
+hbase shell
+```
+- List tables in default database
+```
+hbase> list 'default'
+```
+- This fails with `GSSException: No valid credentials provided` because the cluster is kerberized and we have not authenticated yet
+
+- To exit hbase shell:
+```
+exit
+```
+- Authenticate as sales1 user and check the ticket
+```
+kinit
+# enter password: BadPass#1
+
+klist
+## Default principal: sales1@LAB.HORTONWORKS.NET
+```
+- Now try connect to Hbase shell and list tables as sales1
+```
+hbase shell
+hbase> list 'default'
+```
+- This time it works. Now try to create a table called `sales` with column family called `cf`
+```
+hbase> create 'sales', 'cf'
+```
+- Now it fails with authorization error: 
+  - `org.apache.hadoop.hbase.security.AccessDeniedException: Insufficient permissions for user 'sales1@LAB.HORTONWORKS.NET' (action=create)`
+  - Note: there will be a lot of output from above. The error will be on the line right after your create command
+
+- Login into Ranger UI e.g. at http://RANGER_HOST_PUBLIC_IP:6080/index.html as admin/admin
+
+- In Ranger, click on 'Audit' to open the Audits page and filter by below. 
+  - Service Type: `Hbase`
+  - User: `sales1`
+  
+- Notice that Ranger captured the access attempt and since there is currently no policy to allow the access, it was `Denied`
+![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-audit-HBASE-denied.png)
+
+- To create an HBASE Policy in Ranger, follow below steps:
+  - On the 'Access Manager' tab click HBASE > (clustername)_hbase
+  ![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-HBASE-policy.png)
+  - This will open the list of HBASE policies
+  ![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-HBASE-edit-policy.png)
+  - Click 'Add New Policy' button to create a new one allowing `sales` group users access to `sales` table in HBase:
+    - Policy Name: `sales`
+    - Hbase Table: `sales`
+    - Hbase Column Family: `*`
+    - Hbase Column: `*`
+    - Group : `sales`    
+    - Permissions : `Admin` `Create` `Read` `Write`
+    - Add
+  ![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-HBASE-create-policy.png)
+  
+- Wait 30s for policy to take effect
+  
+- Now try creating the table and now it works
+```
+hbase> create 'sales', 'cf'
+```
+  
+- In Ranger, click on 'Audit' to open the Audits page and filter by below:
+  - Service Type: HBASE
+  - User: sales1
+  
+- Notice that Ranger captured the access attempt and since this time there is a policy to allow the access, it was `Allowed`
+![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-audit-HBASE-allowed.png)  
+
+  - You can also see the details that were captured for each request:
+    - Policy that allowed the access
+    - Time
+    - Requesting user
+    - Service type (e.g. hdfs, hive, hbase etc)
+    - Resource name 
+    - Access type (e.g. read, write, execute)
+    - Result (e.g. allowed or denied)
+    - Access enforcer (i.e. whether native acl or ranger acls were used)
+    - Client IP
+    - Event count
+    
+- For any allowed requests, notice that you can quickly check the details of the policy that allowed the access by clicking on the policy number in the 'Policy ID' column
+![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-audit-HBASE-policy-details.png)  
+
+- Exit hbase shell
+```
+hbase> exit
+```
+
+- Now let's check whether non-sales users can access the table
+
+- Logout as sales1 and log back in as hr1
+```
+kdestroy
+#logout as sales1
+logout
+
+#login as hr1 and authenticate
+sudo su - hr1
+
+kinit
+# enter password: BadPass#1
+
+klist
+## Default principal: hr1@LAB.HORTONWORKS.NET
+```
+- Try to access the same dir as hr1 and notice this user does not even see the table
+```
+hbase shell
+hbase> describe 'sales'
+hbase> list 'default'
+```
+
+![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-hbase-sales.png)
+
+- Try to create a table as hr1 and it fails with `org.apache.hadoop.hbase.security.AccessDeniedException: Insufficient permissions`
+```
+hbase> create 'sales', 'cf'
+```
+- In Ranger, click on 'Audit' to open the Audits page and filter by:
+  - Service Type: `HBASE`
+  - Resource Name: `sales`
+
+- Here you can see the request by sales1 was allowed but hr1 was denied
+
+![Image](https://raw.githubusercontent.com/HortonworksUniversity/Security_Labs/master/screenshots/Ranger-audit-HBASE-summary.png)  
+
+- Exit hbase shell
+```
+hbase> exit
+```
+
+- Logout as hr1
+```
+kdestroy
+logout
+```
+- We have successfully created a table called 'sales' in HBase and setup authorization policies to ensure only sales users have access to the table
+
+- This shows how you can interact with Hadoop components on kerberized cluster and use Ranger to manage authorization policies and audits
+
+--->
+- This completes the lab. You have now interacted with Hadoop components in secured mode and used Ranger to manage authorization policies and audits
