@@ -190,7 +190,8 @@ If user authorization is still not working as expected, then we should look into
         * a. Ranger Admin: From /var/log/ranger/admin/ directory, collect xa_portal.log, access_log.* (latest one) and catalina.out
         * b. Ranger UserSync: From /var/log/ranger/usersync directory, collect usersync.log
         * c. Ranger TagSync: From /var/log/ranger/tagsync directory, collect tagsync.log and tagsync.out
-        * d. Host Service logs: For individual services, debug logs with debug enabled for “org.apache.ranger.*” classes would help a lot. For example:
+        * d. Host Service logs: For individual services, debug logs with debug enabled for “org.apache.ranger.*” classes would help a lot. 
+        * For example:
               * i. HDFS - NameNode logs (DataNode logs NOT required)
               * ii. Hive - HiveServer2 / Hive Metastore logs
               * iii. HBase-HBaseMasterlogs
