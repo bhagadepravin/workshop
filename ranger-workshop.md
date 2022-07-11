@@ -192,10 +192,10 @@ If user authorization is still not working as expected, then we should look into
         * c. Ranger TagSync: From /var/log/ranger/tagsync directory, collect tagsync.log and tagsync.out
         * d. Host Service logs: For individual services, debug logs with debug enabled for “org.apache.ranger.*” classes would help a lot. 
         * For example:
-              * i. HDFS - NameNode logs (DataNode logs NOT required)
-              * ii. Hive - HiveServer2 / Hive Metastore logs
-              * iii. HBase-HBaseMasterlogs
-              * iv. Atlas - Atlas server logs
+            - i. HDFS - NameNode logs (DataNode logs NOT required)
+            - ii. Hive - HiveServer2 / Hive Metastore logs
+            - iii. HBase-HBaseMasterlogs
+            - iv. Atlas - Atlas server logs
 
     * **PolicyCache files**
         * a. In HDP 3.1 and below, the PolicyCache file can be found in /etc/ranger/<Service-Repo-name>/policycache directory on the node where respective Hadoop service is running. For example,
