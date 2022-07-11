@@ -37,3 +37,25 @@ Ranger users are typically the organizational policy administrator who allow/den
 *  **Ranger TagSync**
     * TagSync is introduced specially for syncing Atlas tags into Ranger.
     * It polls Atlas over REST and gets all the new tags defined in Atlas.
+
+## What are the major Ranger components?
+
+* **Ranger Policy**
+     * Ranger policies are the basic building blocks of Ranger authorization. A policy defines three main authorization entities - **which user** 
+      (or       group) can perform **what operations** over **which Hadoop resources**.
+     * By default, Ranger policies can have only "Allow" conditions. 
+     * From HDP 2.6 (and Ranger 0.7.0) onwards, Ranger Policy can also have a "Deny" conditions. By default, the deny conditions are disabled. 
+       Users need to enable this by adding `ranger.servicedef.enableDenyAndExceptionsInPolicies=true` in `custom ranger-admin-site` via **Ambari**.
+     * In the case, when a policy has both allow and deny conditions, the deny conditions will be given preference over allow conditions.
+
+* **Ranger Service Repositories**
+     * Ranger Service Repositories are the service specific containers under which, all the policies that belongs to a service are stored.
+     * When a Ranger Plugin is enabled for a host service (like HDFS, Hive or YARN), a default repository for that service is created by Ambari.
+     * Service Repositories are named with cluster name. E.g. “MyProdCluster_hadoop” for HDFS repo, “MyProdCluster_hive” for Hive repo and so on.
+     * In Ranger Admin UI, the Ranger policies are organised by Service Repositories.
+
+* **Ranger Plugins**
+     * Ranger Plugins are in-memory dynamic hook that run inside any Ranger-enabled host service (like Namenode, ResourceManager etc.). Each service loads the Ranger plugin during startup and based on authorization configuration, the plugin is activated.
+     * Ranger Plugins keep polling the Ranger Admin over REST for the latest policy data every 30 seconds (configurable). The policy data is stored in JSON format in a on-disk local file, called PolicyCache.
+     * PolicyCache file will NOT get updated if there is no change in policy from the last downloaded version (A policy version at service repo level is maintained in Ranger database).
+     * Ranger Plugins consult the Ranger policy and decide whether to allow/deny access to end-user.
