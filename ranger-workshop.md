@@ -177,10 +177,10 @@ If user authorization is still not working as expected, then we should look into
      * Look for any error / stack trace in the debug log
      * Work further based on the error message.
 
-* **1.7.0 Collect Configs + Logs**
 
 ### Ranger Troubleshooting Data Collection
 
+* **1.7.0 Collect Configs + Logs**
     * **Configuration files**
         * a. Ranger Admin: /etc/ranger/admin/conf/*
         * b. Ranger UserSync: /etc/ranger/usersync/conf/*
