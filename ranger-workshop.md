@@ -131,10 +131,8 @@ $ lsof -p <nn-pid> | grep ranger-plugin
      * To check if PolicyCache is updated:
         * Check the last modified date/time stamp of the json file - should be a recent timestamp
         * Make some changes (add some user/resource) in any Ranger policy (& wait for 30 seconds) and see if Ranger plugin updates the same in the PolicyCache file.
-        * Or check Plugin Status Tab
 <img width="829" alt="image" src="https://user-images.githubusercontent.com/28974904/178189273-95b3e79a-f062-400d-a608-ea80869721bb.png">
-
-     * Or check Plugin Status Tab
+Or check Plugin Status Tab
 
 * **1.3.1 Make sure PolicyCache is getting updated**
 * If PolicyCache file is not getting updated, then here are a couple of things that we can do:
@@ -153,11 +151,11 @@ $ lsof -p <nn-pid> | grep ranger-plugin
      * If there is no policy defined, then create a policy via Ranger Admin UI under the right Service Repo to allow access to this user/group + operation + resource combination. For example, here’s how to create a policy for `hr1` user to allow him to perform `read` operation on `/data/office` location `in HDFS`:
 
 <img width="832" alt="image" src="https://user-images.githubusercontent.com/28974904/178189545-94ca0365-110f-4057-9be5-772e4dee6446.png">
+Once the new policy is saved, wait for 30 seconds for plugins to download the new policy information. This plugin operation can be verified by Audit tab in Ranger Admin UI, like this:
 
-* Once the new policy is saved, wait for 30 seconds for plugins to download the new policy information. This plugin operation can be verified by Audit tab in Ranger Admin UI, like this:
 <img width="830" alt="image" src="https://user-images.githubusercontent.com/28974904/178189582-fa47041e-bd5a-4d6b-a506-76e75da4b9a1.png">
 
-* For your service name (bahubali_hadoop in this example), if ‘Export Date’ shows a recent date/time and ‘HTTP Response Code’ shows 200, then new policy is downloaded correctly.
+For your service name (bahubali_hadoop in this example), if ‘Export Date’ shows a recent date/time and ‘HTTP Response Code’ shows 200, then new policy is downloaded correctly.
 
 * **1.5.0 Check Ranger Audit logs for Access Enforcer**
      * If access is still denied, then check Ranger Audit logs in Ranger Admin UI and search for the user name who is trying to access the resource.
@@ -166,10 +164,10 @@ $ lsof -p <nn-pid> | grep ranger-plugin
         * If this is value is `“ranger-acl”`, that means that permission denied is due a Ranger policy, whose ID can be found in 'Policy ID' column.
 <img width="831" alt="image" src="https://user-images.githubusercontent.com/28974904/178189828-9c6e1d52-3dba-4ece-80c2-d76d48a0ce5d.png">
 
-     * For example, since we have created policy for ‘hr1’ user to read on /data/office and when /data/office is owned by ‘hdfs’ user, then any read operation will be allowed due to ‘ranger-acl’ but any write operation will be denied due to ‘hadoop-acl’.
+For example, since we have created policy for ‘hr1’ user to read on /data/office and when /data/office is owned by ‘hdfs’ user, then any read operation will be allowed due to ‘ranger-acl’ but any write operation will be denied due to ‘hadoop-acl’.
 <img width="832" alt="image" src="https://user-images.githubusercontent.com/28974904/178189875-e4bdcc26-7d64-4004-8c98-d394c46d466e.png">
 
-*     Once you have found the Access Enforcer, then modify either Ranger Policy or HDFS ACLs to allow / deny access to user as per customer’s problem statement.
+Once you have found the Access Enforcer, then modify either Ranger Policy or HDFS ACLs to allow / deny access to user as per customer’s problem statement.
 
 * **1.6.0 Check Host Service logs**
 If user authorization is still not working as expected, then we should look into the host service logs. Enabling debug would always help to understand the real reason for the error. So,
