@@ -169,7 +169,7 @@ $ lsof -p <nn-pid> | grep ranger-plugin
      * For example, since we have created policy for ‘hr1’ user to read on /data/office and when /data/office is owned by ‘hdfs’ user, then any read operation will be allowed due to ‘ranger-acl’ but any write operation will be denied due to ‘hadoop-acl’.
 <img width="832" alt="image" src="https://user-images.githubusercontent.com/28974904/178189875-e4bdcc26-7d64-4004-8c98-d394c46d466e.png">
 
-* Once you have found the Access Enforcer, then modify either Ranger Policy or HDFS ACLs to allow / deny access to user as per customer’s problem statement.
+*     Once you have found the Access Enforcer, then modify either Ranger Policy or HDFS ACLs to allow / deny access to user as per customer’s problem statement.
 
 * **1.6.0 Check Host Service logs**
 If user authorization is still not working as expected, then we should look into the host service logs. Enabling debug would always help to understand the real reason for the error. So,
