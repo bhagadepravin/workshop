@@ -399,7 +399,7 @@ http://PUBLIC_IP_OF_SOLRLEADER_NODE:6083/solr/banana/index.html#/dashboard
 --->
 ------------------
 
-# Lab 7a
+# Lab 1a
 
 ## Secured Hadoop exercises
 
