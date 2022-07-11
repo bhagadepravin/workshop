@@ -202,3 +202,4 @@ If user authorization is still not working as expected, then we should look into
             * i. HDFS - /etc/ranger/bahubali_hadoop/policycache/hdfs_bahubali_hadoop.json
             * ii. Hive - /etc/ranger/bahubali_hive/policycache/hiveServer2_bahubali_hive.json
             * iii. KMS-/etc/ranger/bahubali_kms/policycache/kms_bahubali_kms.json
+        * b. In CDP-DC 7, the PolicyCache is located under /var/lib/ranger/<plugin_name>/policy-cache directory
