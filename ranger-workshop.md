@@ -1,12 +1,20 @@
 # Ranger Workshop
 
-LAB:
--
--
-  -
-  -
-  
-LAB:
+* **Topics:**
+	* Why Apache Ranger?
+	* What is Apache Ranger?
+	* What are the services that Ranger run?
+	* What are the major Ranger components?
+	* How does user get authorized in Ranger?
+	* How does Ranger audit work?
+	* Ranger Troubleshooting (Ranger Policy / Plugins)
+	
+- [Lab](#lab-7a)
+  - Secured Hadoop exercises
+    - HDFS
+    - Hive
+    - HBase
+
 
 ## Why Apache Ranger?
 
