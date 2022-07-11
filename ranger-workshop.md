@@ -9,7 +9,10 @@
 	* How does Ranger audit work?
 	* Ranger Troubleshooting (Ranger Policy / Plugins)
 	
-- [Lab](#lab-7a)
+- [Lab](#lab-1)
+  - Ranger install pre-reqs
+  - Ranger install
+- [Lab 7a](#lab-7a)
   - Secured Hadoop exercises
     - HDFS
     - Hive
