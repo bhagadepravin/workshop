@@ -112,8 +112,8 @@ $ lsof -p <nn-pid> | grep ranger-plugin
 ```
 <img width="830" alt="image" src="https://user-images.githubusercontent.com/28974904/178188942-3f1668e8-8368-4a34-ae72-0ac5ba7eb6af.png">
 
-     * Similar commands can be used for other host services like HiveServer2, YARN ResourceManager, Ranger KMS, HBASE Master, Knox etc. This is the most accurate and safest way to confirm that a Ranger Plugin is indeed loaded.
-     * Another way to check this - log in to Ranger Admin UI and confirm whether the Default Ranger service repository has been created with default policy.
+* Similar commands can be used for other host services like HiveServer2, YARN ResourceManager, Ranger KMS, HBASE Master, Knox etc. This is the most accurate and safest way to confirm that a Ranger Plugin is indeed loaded.
+* Another way to check this - log in to Ranger Admin UI and confirm whether the Default Ranger service repository has been created with default policy.
 
 <img width="833" alt="image" src="https://user-images.githubusercontent.com/28974904/178188998-fcad289e-d25a-4030-9da7-5c2c3ba42387.png">
 <img width="837" alt="image" src="https://user-images.githubusercontent.com/28974904/178189008-8df592d2-63a1-4714-a86e-c6a89adb666f.png">
@@ -123,7 +123,7 @@ $ lsof -p <nn-pid> | grep ranger-plugin
      * One can also enable / disable Ranger Plugin directly from host service configuration in Ambari. These options can be accessed from `Ambari > Host Service (HDFS) > Configs > Advanced ranger-hdfs-plugin-properties` :
 <img width="819" alt="image" src="https://user-images.githubusercontent.com/28974904/178189084-c96f6469-edc1-4a15-85df-366ce67a0545.png">
 
-     * Along with the above checkbox, one needs to fill necessary details (default values would work for most properties).
+* Along with the above checkbox, one needs to fill necessary details (default values would work for most properties).
 
 * **1.3.0 Check if PolicyCache is updated**
      * A good Ranger Plugin should connect to Ranger Admin over REST and download the latest policy information in a on-disk PolicyCache file on the host service node
@@ -131,20 +131,20 @@ $ lsof -p <nn-pid> | grep ranger-plugin
      * To check if PolicyCache is updated:
         * Check the last modified date/time stamp of the json file - should be a recent timestamp
         * Make some changes (add some user/resource) in any Ranger policy (& wait for 30 seconds) and see if Ranger plugin updates the same in the PolicyCache file.
+        * Or check Plugin Status Tab
 <img width="829" alt="image" src="https://user-images.githubusercontent.com/28974904/178189273-95b3e79a-f062-400d-a608-ea80869721bb.png">
 
      * Or check Plugin Status Tab
 
 * **1.3.1 Make sure PolicyCache is getting updated**
-
-If PolicyCache file is not getting updated, then here are a couple of things that we can do:
+* If PolicyCache file is not getting updated, then here are a couple of things that we can do:
      * Check the file permission of PolicyCache file - should be owned by a user who is running the host service (hdfs for NameNode, yarn for YARN RM, hive for HiveServer2 etc.)
      * Try restarting the host service (Get customer’s permission to do this, if this is a production environment)
      * Check for errors in host service logs, usually there could be connection issue between host service and Ranger Admin.
      * You may need to enable debug for Ranger plugin and restart the host service again to get the root cause of the error.
 
 * **1.4.0 Check if a Ranger Policy actually defined**
-If PolicyCache is updated correctly and still authorization is not working, then check if there is a policy defined which allows access for the combination of these:
+* If PolicyCache is updated correctly and still authorization is not working, then check if there is a policy defined which allows access for the combination of these:
      * user (or group that the user is part of)
      * Resource (that is being accessed)
      * operation (that is being performed by the said user)
@@ -154,10 +154,10 @@ If PolicyCache is updated correctly and still authorization is not working, then
 
 <img width="832" alt="image" src="https://user-images.githubusercontent.com/28974904/178189545-94ca0365-110f-4057-9be5-772e4dee6446.png">
 
-     * Once the new policy is saved, wait for 30 seconds for plugins to download the new policy information. This plugin operation can be verified by Audit tab in Ranger Admin UI, like this:
+* Once the new policy is saved, wait for 30 seconds for plugins to download the new policy information. This plugin operation can be verified by Audit tab in Ranger Admin UI, like this:
 <img width="830" alt="image" src="https://user-images.githubusercontent.com/28974904/178189582-fa47041e-bd5a-4d6b-a506-76e75da4b9a1.png">
 
-     * For your service name (bahubali_hadoop in this example), if ‘Export Date’ shows a recent date/time and ‘HTTP Response Code’ shows 200, then new policy is downloaded correctly.
+* For your service name (bahubali_hadoop in this example), if ‘Export Date’ shows a recent date/time and ‘HTTP Response Code’ shows 200, then new policy is downloaded correctly.
 
 * **1.5.0 Check Ranger Audit logs for Access Enforcer**
      * If access is still denied, then check Ranger Audit logs in Ranger Admin UI and search for the user name who is trying to access the resource.
@@ -169,7 +169,7 @@ If PolicyCache is updated correctly and still authorization is not working, then
      * For example, since we have created policy for ‘hr1’ user to read on /data/office and when /data/office is owned by ‘hdfs’ user, then any read operation will be allowed due to ‘ranger-acl’ but any write operation will be denied due to ‘hadoop-acl’.
 <img width="832" alt="image" src="https://user-images.githubusercontent.com/28974904/178189875-e4bdcc26-7d64-4004-8c98-d394c46d466e.png">
 
-     * Once you have found the Access Enforcer, then modify either Ranger Policy or HDFS ACLs to allow / deny access to user as per customer’s problem statement.
+* Once you have found the Access Enforcer, then modify either Ranger Policy or HDFS ACLs to allow / deny access to user as per customer’s problem statement.
 
 * **1.6.0 Check Host Service logs**
 If user authorization is still not working as expected, then we should look into the host service logs. Enabling debug would always help to understand the real reason for the error. So,
@@ -181,6 +181,7 @@ If user authorization is still not working as expected, then we should look into
 * **1.7.0 Collect Configs + Logs**
 
 ### Ranger Troubleshooting Data Collection
+
     * **Configuration files**
         * a. Ranger Admin: /etc/ranger/admin/conf/*
         * b. Ranger UserSync: /etc/ranger/usersync/conf/*
