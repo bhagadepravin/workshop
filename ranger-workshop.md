@@ -59,3 +59,10 @@ Ranger users are typically the organizational policy administrator who allow/den
      * Ranger Plugins keep polling the Ranger Admin over REST for the latest policy data every 30 seconds (configurable). The policy data is stored in JSON format in a on-disk local file, called PolicyCache.
      * PolicyCache file will NOT get updated if there is no change in policy from the last downloaded version (A policy version at service repo level is maintained in Ranger database).
      * Ranger Plugins consult the Ranger policy and decide whether to allow/deny access to end-user.
+
+* **Ranger Audit**
+     * Ranger Audit component is responsible for logging and record keeping of all the access attempts (both failed and passed) made by end-user.
+     * Ranger Audit records can be stored in HDFS (for archival) and/or SOLR (for faster retrieval). SOLR store can be either Ambari Infra (one node SolrCloud) or an enterprise SolrCloud (multi-node SolrCloud).
+     * **Note:** Ambari Infra Solr is, by default, a single node SolrCloud setup. In bigger production setup, it can also be configured to be a multi-node SolrCloud.
+     * Ranger Audit records are generated and pushed to store by Ranger Plugins.
+
