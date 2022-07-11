@@ -204,7 +204,58 @@ If user authorization is still not working as expected, then we should look into
             * iii. KMS-/etc/ranger/bahubali_kms/policycache/kms_bahubali_kms.json
         * b. In CDP-DC 7, the PolicyCache is located under /var/lib/ranger/<plugin_name>/policy-cache directory
 
+
+# Lab 1
+
+## Ranger install
+
+Goal: In this lab we will install Apache Ranger via Ambari and setup Ranger plugins for Hadoop components: HDFS, Hive, Hbase, YARN, Knox. We will also enable Ranger audits to Solr and HDFS
+
+### Ranger prereqs
+
+##### Create & confirm MySQL user 'root'
+
+Prepare MySQL DB for Ranger use.
+
+- Run these steps on the node where MySQL/Hive is located. To find this, you can either:
+  - use Ambari UI or
+  - Just run `mysql` on each node: if it returns `mysql: command not found`, move onto next node
+
+- `sudo mysql`
+- Execute following in the MySQL shell to create "Ranger DB root User" in MySQL. Ambari will use this user to create rangeradmin user.
+```sql
+CREATE USER 'root'@'%';
+GRANT ALL PRIVILEGES ON *.* to 'root'@'%' WITH GRANT OPTION;
+SET PASSWORD FOR 'root'@'%' = PASSWORD('BadPass#1');
+SET PASSWORD = PASSWORD('BadPass#1');
+FLUSH PRIVILEGES;
+exit
+```
+
+- Confirm MySQL user: `mysql -u root -h $(hostname -f) -p -e "select count(user) from mysql.user;"`
+  - Output should be a simple count. 
+  - In case of errors, check the previous step for errors. 
+  - If you encounter below error, modeify /etc/my.conf by removing `skip-grant-tables` and then restarting the service by `service mysqld restart`
+  
+`ERROR 1290 (HY000): The MySQL server is running with the --skip-grant-tables option so it cannot execute this statement`
  
+  - If it still does not work, try creating user admin instead. If you do this, make sure to enter admin insted of root when prompted for "Ranger DB root User" in Ambari
+
+##### Prepare Ambari for MySQL
+- Run this on Ambari node
+- Add MySQL JAR to Ambari:
+  - `sudo ambari-server setup --jdbc-db=mysql --jdbc-driver=/usr/share/java/mysql-connector-java.jar`
+    - If the file is not present, it is available on RHEL/CentOS with: `sudo yum -y install mysql-connector-java`
+
+
+
+
+###### Setup Solr for Ranger audit 
+
+- Starting HDP 2.5, if you have deployed Ambari Infra service installed, this can be used for Ranger audits.
+- **Make sure Ambari Infra service is installed and started before starting Ranger install**
+
+- *TODO*: add steps to install/configure Banana dashboard for Ranger Audits 
 ## Ranger install
 
 ##### Install Ranger
