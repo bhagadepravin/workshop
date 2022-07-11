@@ -80,8 +80,8 @@ Ranger users are typically the organizational policy administrator who allow/den
 
 <img width="824" alt="image" src="https://user-images.githubusercontent.com/28974904/178188017-bfbdc8a1-88aa-4909-afe9-1e3b1fd2b81b.png">
 
-     * When the plugin is enabled AND no specific policy is in place for access to some object, the plugin will fall back to enforcing the standard component level Access Control Lists (ACL’s). For HDFS that would be the user : rwx / group : rwx / other : rwx ACL’s on folders and files.
-     * Once this defaulting to component ACL’s happens the audit events show a ‘ - ‘ in the ‘Policy ID’ column instead of a policy number. If a Ranger policy was in control of allowing/denying access, the policy number is shown in the first column.
+1. When the plugin is enabled AND no specific policy is in place for access to some object, the plugin will fall back to enforcing the standard component level Access Control Lists (ACL’s). For HDFS that would be the user : rwx / group : rwx / other : rwx ACL’s on folders and files.
+2. Once this defaulting to component ACL’s happens the audit events show a ‘ - ‘ in the ‘Policy ID’ column instead of a policy number. If a Ranger policy was in control of allowing/denying access, the policy number is shown in the first column.
 
 
 ## Ranger Troubleshooting
